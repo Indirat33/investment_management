@@ -14,6 +14,7 @@ import {
   PieChart as PieChartIcon,
   ArrowRight,
   Sparkles,
+  ShieldCheck,
 } from "lucide-react";
 import {
   ResponsiveContainer,
@@ -33,6 +34,7 @@ type UserType = {
   id: string;
   name: string;
   email: string;
+  role?: string;
   createdAt: string;
 };
 
@@ -226,6 +228,16 @@ export default function DashboardPage() {
                 <User size={20} />
                 Profile
               </Link>
+
+              {user.role === "ADMIN" && (
+                <Link
+                  href="/admin"
+                  className="flex items-center gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition"
+                >
+                  <ShieldCheck size={20} />
+                  Admin Panel
+                </Link>
+              )}
             </nav>
           </div>
 
