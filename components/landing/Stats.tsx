@@ -6,7 +6,7 @@ export default function Stats() {
       description: "Trusted users growing their wealth with our platform.",
     },
     {
-      value: "$50M+",
+      value: "Rs. 50M+",
       title: "Assets Managed",
       description: "Investment portfolios managed securely every day.",
     },

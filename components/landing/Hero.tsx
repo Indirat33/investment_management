@@ -45,7 +45,7 @@ export default function Hero() {
             </div>
 
             <div>
-              <h3 className="text-3xl font-bold text-white">$25M+</h3>
+              <h3 className="text-3xl font-bold text-white">Rs. 25M+</h3>
               <p className="text-slate-400">Assets Managed</p>
             </div>
 
@@ -72,7 +72,7 @@ export default function Hero() {
                 </p>
 
                 <h3 className="mt-2 text-3xl font-bold text-slate-900">
-                  125,430
+                  Rs. 125,430
                 </h3>
               </div>
 
@@ -92,7 +92,7 @@ export default function Hero() {
                 </p>
 
                 <h3 className="mt-2 text-3xl font-bold text-blue-700">
-                  +3,250
+                  +Rs. 3,250
                 </h3>
               </div>
 
