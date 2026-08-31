@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
-import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 
-async function ensureTablesExist() {
+export async function GET() {
   try {
+    // Create User table if not exists
     await prisma.$executeRawUnsafe(`
       CREATE TABLE IF NOT EXISTS "User" (
           "id" TEXT NOT NULL,
@@ -15,9 +15,13 @@ async function ensureTablesExist() {
           CONSTRAINT "User_pkey" PRIMARY KEY ("id")
       );
     `);
+
+    // Create User email unique index
     await prisma.$executeRawUnsafe(`
       CREATE UNIQUE INDEX IF NOT EXISTS "User_email_key" ON "User"("email");
     `);
+
+    // Create Investment table if not exists
     await prisma.$executeRawUnsafe(`
       CREATE TABLE IF NOT EXISTS "Investment" (
           "id" TEXT NOT NULL,
@@ -32,63 +36,19 @@ async function ensureTablesExist() {
           CONSTRAINT "Investment_pkey" PRIMARY KEY ("id")
       );
     `);
-  } catch (err) {
-    console.error("Auto table creation error:", err);
-  }
-}
 
-export async function POST(request: Request) {
-  try {
-    await ensureTablesExist();
-    const { name, email, password } = await request.json();
-
-    if (!name || !email || !password) {
-      return NextResponse.json(
-        { message: "Please fill all fields." },
-        { status: 400 }
-      );
-    }
-
-    const existingUser = await prisma.user.findUnique({
-      where: {
-        email,
-      },
+    return NextResponse.json({
+      success: true,
+      message: "Cloud database tables created successfully!",
     });
-
-    if (existingUser) {
-      return NextResponse.json(
-        { message: "User already exists." },
-        { status: 409 }
-      );
-    }
-
-    // Hash the password before saving it
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const user = await prisma.user.create({
-      data: {
-        name,
-        email,
-        password: hashedPassword,
-      },
-    });
-
+  } catch (error: any) {
+    console.error("Init DB Error:", error);
     return NextResponse.json(
       {
-        message: "Registration Successful",
-        user: {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-        },
+        success: false,
+        message: "Failed to initialize tables",
+        error: error?.message || String(error),
       },
-      { status: 201 }
-    );
-  } catch (error) {
-    console.error("Registration error:", error);
-
-    return NextResponse.json(
-      { message: "Internal Server Error" },
       { status: 500 }
     );
   }
