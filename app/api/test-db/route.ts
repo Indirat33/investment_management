@@ -10,13 +10,14 @@ export async function GET() {
       message: "Database connected successfully!",
       users,
     });
-  } catch (error) {
-    console.error(error);
+  } catch (error: any) {
+    console.error("Database connection test error:", error);
 
     return NextResponse.json(
       {
         success: false,
         message: "Database connection failed",
+        error: error?.message || String(error),
       },
       { status: 500 }
     );
