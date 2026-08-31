@@ -23,6 +23,7 @@ type User = {
   id: string;
   name: string;
   email: string;
+  role?: string;
   createdAt: string;
 };
 
@@ -194,6 +195,16 @@ export default function ProfilePage() {
                 <UserIcon size={20} />
                 Profile
               </Link>
+
+              {user.role === "ADMIN" && (
+                <Link
+                  href="/admin"
+                  className="flex items-center gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition"
+                >
+                  <ShieldCheck size={20} />
+                  Admin Panel
+                </Link>
+              )}
             </nav>
           </div>
 

@@ -22,6 +22,7 @@ import {
   Layers,
   FileText,
   FileSpreadsheet,
+  ShieldCheck,
 } from "lucide-react";
 import { exportToExcel, exportToPDF } from "@/lib/exportUtils";
 
@@ -72,7 +73,7 @@ export default function InvestmentsPage() {
 
   const [investments, setInvestments] = useState<Investment[]>([]);
   const [summary, setSummary] = useState<Summary | null>(null);
-  const [user, setUser] = useState<{ name: string } | null>(null);
+  const [user, setUser] = useState<{ name: string; role?: string } | null>(null);
   const [loading, setLoading] = useState(true);
   const [loggingOut, setLoggingOut] = useState(false);
 
@@ -299,6 +300,16 @@ export default function InvestmentsPage() {
                 <User size={20} />
                 Profile
               </Link>
+
+              {user?.role === "ADMIN" && (
+                <Link
+                  href="/admin"
+                  className="flex items-center gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition"
+                >
+                  <ShieldCheck size={20} />
+                  Admin Panel
+                </Link>
+              )}
             </nav>
           </div>
 

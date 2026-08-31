@@ -13,6 +13,7 @@ import {
   Calendar,
   Tag,
   PieChart,
+  ShieldCheck,
 } from "lucide-react";
 
 const CATEGORIES = [
@@ -29,6 +30,7 @@ const CATEGORIES = [
 export default function AddInvestmentPage() {
   const router = useRouter();
 
+  const [user, setUser] = useState<{ role?: string } | null>(null);
   const [assetName, setAssetName] = useState("");
   const [category, setCategory] = useState("Stocks");
   const [amount, setAmount] = useState("");
@@ -40,6 +42,17 @@ export default function AddInvestmentPage() {
   const [loading, setLoading] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+
+  useEffect(() => {
+    fetch("/api/auth/me")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data?.user) {
+          setUser(data.user);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   // Auto-fill current value with purchase amount if empty
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -164,6 +177,16 @@ export default function AddInvestmentPage() {
                 <User size={20} />
                 Profile
               </Link>
+
+              {user?.role === "ADMIN" && (
+                <Link
+                  href="/admin"
+                  className="flex items-center gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition"
+                >
+                  <ShieldCheck size={20} />
+                  Admin Panel
+                </Link>
+              )}
             </nav>
           </div>
 
