@@ -1,4 +1,5 @@
 import Link from "next/link";
+import SocialIcons from "./SocialIcons";
 
 export default function Footer() {
   return (
@@ -18,6 +19,13 @@ export default function Footer() {
             designed for secure portfolio management and
             financial growth.
           </p>
+
+          <div className="mt-7">
+            <p className="text-xs uppercase tracking-wider text-slate-400 font-semibold mb-3.5">
+              Follow Our Channels
+            </p>
+            <SocialIcons variant="button" size="lg" className="flex items-center gap-3.5" />
+          </div>
         </div>
 
         <div>
@@ -26,9 +34,10 @@ export default function Footer() {
           </h3>
 
           <ul className="mt-5 space-y-3 text-slate-400">
-            <li><Link href="/">Home</Link></li>
-            <li><a href="#features">Features</a></li>
-            <li><a href="#how">How It Works</a></li>
+            <li><Link href="/" className="hover:text-blue-400 transition">Home</Link></li>
+            <li><a href="#features" className="hover:text-blue-400 transition">Features</a></li>
+            <li><a href="#how" className="hover:text-blue-400 transition">How It Works</a></li>
+            <li><a href="#testimonials" className="hover:text-blue-400 transition">Testimonials</a></li>
           </ul>
         </div>
 
@@ -38,15 +47,16 @@ export default function Footer() {
           </h3>
 
           <ul className="mt-5 space-y-3 text-slate-400">
-            <li>About Us</li>
-            <li>Privacy Policy</li>
-            <li>Terms & Conditions</li>
+            <li className="hover:text-blue-400 transition cursor-pointer">About Us</li>
+            <li className="hover:text-blue-400 transition cursor-pointer">Privacy Policy</li>
+            <li className="hover:text-blue-400 transition cursor-pointer">Terms & Conditions</li>
+            <li className="hover:text-blue-400 transition cursor-pointer">Security & Compliance</li>
           </ul>
         </div>
 
         <div>
           <h3 className="text-xl font-semibold">
-            Contact
+            Contact & Community
           </h3>
 
           <ul className="mt-5 space-y-3 text-slate-400">
@@ -54,12 +64,22 @@ export default function Footer() {
             <li>Phone: +1 (555) 123-4567</li>
             <li>New York, USA</li>
           </ul>
+
+          <div className="mt-7">
+            <p className="text-xs uppercase tracking-wider text-slate-400 font-semibold mb-3.5">
+              Join the Conversation
+            </p>
+            <SocialIcons variant="minimal" size="lg" className="flex items-center gap-5" />
+          </div>
         </div>
 
       </div>
 
-      <div className="mt-12 border-t border-slate-800 pt-8 text-center text-slate-500">
-        © 2026 InvestPro. All rights reserved.
+      <div className="mt-12 border-t border-slate-800 pt-8 px-8 mx-auto max-w-7xl flex flex-col md:flex-row items-center justify-between gap-4 text-slate-500 text-sm">
+        <div>
+          © 2026 InvestPro. All rights reserved.
+        </div>
+        <SocialIcons variant="minimal" size="md" className="flex items-center gap-5" />
       </div>
     </footer>
   );

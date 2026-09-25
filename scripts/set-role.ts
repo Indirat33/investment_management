@@ -5,8 +5,8 @@ async function main() {
   const email = process.argv[2];
   const role = process.argv[3]?.toUpperCase();
 
-  if (!email || !role || !["USER", "ADMIN"].includes(role)) {
-    console.error("Usage: npx tsx scripts/set-role.ts user@example.com [USER|ADMIN]");
+  if (!email || !role || !["USER", "ADMIN", "SUPERADMIN"].includes(role)) {
+    console.error("Usage: npx tsx scripts/set-role.ts user@example.com [USER|ADMIN|SUPERADMIN]");
     const users = await prisma.user.findMany({ select: { email: true, role: true } });
     console.log("Current Users:");
     users.forEach((u) => console.log(`  - ${u.email} (${u.role})`));

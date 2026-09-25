@@ -1,0 +1,47 @@
+import "dotenv/config";
+import { prisma } from "../lib/prisma";
+
+async function listUsers() {
+  const users = await prisma.user.findMany({ select: { email: true, role: true } });
+
+  console.error(
+    users.length === 0
+      ? "There are no registered users yet. Sign up at /register first."
+      : `Registered emails:\n${users.map((user) => `  - ${user.email} (${user.role})`).join("\n")}`
+  );
+}
+
+async function main() {
+  const email = process.argv[2];
+
+  if (!email) {
+    console.error("Usage: npm run make-superadmin -- user@example.com");
+    await listUsers();
+    process.exit(1);
+  }
+
+  const existing = await prisma.user.findUnique({ where: { email } });
+
+  if (!existing) {
+    console.error(`No user found with email "${email}".`);
+    await listUsers();
+    process.exit(1);
+  }
+
+  const user = await prisma.user.update({
+    where: { email },
+    data: { role: "SUPERADMIN" },
+    select: { email: true, role: true },
+  });
+
+  console.log(`✨ Success: ${user.email} is now a ${user.role}!`);
+}
+
+main()
+  .catch((error) => {
+    console.error(error);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });

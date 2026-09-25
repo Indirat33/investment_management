@@ -1,4 +1,5 @@
 import Link from "next/link";
+import SocialIcons from "./SocialIcons";
 
 export default function Hero() {
   return (
@@ -53,6 +54,13 @@ export default function Hero() {
               <h3 className="text-3xl font-bold text-white">99.9%</h3>
               <p className="text-slate-400">Secure Platform</p>
             </div>
+          </div>
+
+          <div className="mt-8 pt-6 border-t border-slate-800/80 flex items-center gap-4">
+            <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+              Join Our Community:
+            </span>
+            <SocialIcons variant="minimal" className="flex items-center gap-3.5" />
           </div>
         </div>
 

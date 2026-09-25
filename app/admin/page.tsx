@@ -15,6 +15,10 @@ import {
   Trash2,
   Crown,
   UserMinus,
+  ShieldAlert,
+  Sparkles,
+  ArrowLeftRight,
+  HelpCircle,
 } from "lucide-react";
 import {
   ResponsiveContainer,
@@ -40,6 +44,7 @@ type AdminType = {
 type Summary = {
   totalUsers: number;
   totalAdmins: number;
+  totalSuperAdmins?: number;
   totalInvestments: number;
   totalInvested: number;
   totalCurrentValue: number;
@@ -171,8 +176,7 @@ export default function AdminDashboardPage() {
     }
   };
 
-  const handleRoleChange = async (user: UserStat) => {
-    const nextRole = user.role === "ADMIN" ? "USER" : "ADMIN";
+  const handleSetRole = async (user: UserStat, nextRole: string) => {
     setActionUserId(user.id);
     setMessage(null);
 
@@ -318,6 +322,30 @@ export default function AdminDashboardPage() {
                 <TrendingUp size={20} />
                 Investments
               </Link>
+
+              <Link
+                href="/portfolio"
+                className="flex items-center gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition"
+              >
+                <PieChartIcon size={20} />
+                Portfolio
+              </Link>
+
+              <Link
+                href="/transactions"
+                className="flex items-center gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition"
+              >
+                <ArrowLeftRight size={20} />
+                Transactions
+              </Link>
+
+              <Link
+                href="/support"
+                className="flex items-center gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition"
+              >
+                <HelpCircle size={20} />
+                Support & Help
+              </Link>
             </nav>
           </div>
 
@@ -341,10 +369,23 @@ export default function AdminDashboardPage() {
               </p>
             </div>
 
-            <span className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white">
-              <Crown size={16} className="text-amber-400" />
-              {admin.name}
-            </span>
+            {admin.role === "SUPERADMIN" ? (
+              <span className="inline-flex items-center gap-2 rounded-xl bg-purple-950 border border-purple-500/40 px-4 py-2.5 text-sm font-semibold text-purple-200 shadow-md">
+                <ShieldAlert size={16} className="text-purple-400" />
+                <span>{admin.name}</span>
+                <span className="rounded-md bg-purple-500/20 px-2 py-0.5 text-xs text-purple-300 font-bold border border-purple-500/30">
+                  SUPERADMIN
+                </span>
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white">
+                <Crown size={16} className="text-amber-400" />
+                <span>{admin.name}</span>
+                <span className="rounded-md bg-amber-500/20 px-2 py-0.5 text-xs text-amber-300 font-bold border border-amber-500/30">
+                  ADMIN
+                </span>
+              </span>
+            )}
           </div>
 
           {message && (
@@ -371,7 +412,7 @@ export default function AdminDashboardPage() {
                     {summary?.totalUsers || 0}
                   </h3>
                   <p className="mt-1 text-xs font-semibold text-slate-500">
-                    {summary?.totalAdmins || 0} admin
+                    {summary?.totalSuperAdmins || 0} superadmin, {summary?.totalAdmins || 0} admin
                     {(summary?.totalAdmins || 0) === 1 ? "" : "s"}
                   </p>
                 </div>
@@ -556,12 +597,16 @@ export default function AdminDashboardPage() {
                         </td>
                         <td className="px-5 py-4">
                           <span
-                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${
-                              user.role === "ADMIN"
-                                ? "bg-amber-50 text-amber-700 border-amber-200"
+                            className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold border ${
+                              user.role === "SUPERADMIN"
+                                ? "bg-purple-100 text-purple-800 border-purple-300"
+                                : user.role === "ADMIN"
+                                ? "bg-amber-100 text-amber-800 border-amber-300"
                                 : "bg-slate-100 text-slate-700 border-slate-200"
                             }`}
                           >
+                            {user.role === "SUPERADMIN" && <ShieldAlert size={12} className="text-purple-600" />}
+                            {user.role === "ADMIN" && <Crown size={12} className="text-amber-600" />}
                             {user.role}
                           </span>
                         </td>
@@ -584,29 +629,85 @@ export default function AdminDashboardPage() {
                         </td>
                         <td className="px-5 py-4">
                           <div className="flex items-center justify-end gap-2">
-                            <button
-                              onClick={() => handleRoleChange(user)}
-                              disabled={actionUserId === user.id || user.id === admin.id}
-                              className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed transition"
-                            >
-                              {user.role === "ADMIN" ? (
-                                <>
-                                  <UserMinus size={14} /> Make user
-                                </>
-                              ) : (
-                                <>
-                                  <Crown size={14} /> Make admin
-                                </>
-                              )}
-                            </button>
+                            {admin.role === "SUPERADMIN" ? (
+                              <div className="flex items-center gap-1.5">
+                                {user.id !== admin.id ? (
+                                  <>
+                                    {user.role !== "USER" && (
+                                      <button
+                                        onClick={() => handleSetRole(user, "USER")}
+                                        disabled={actionUserId === user.id}
+                                        className="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-100 disabled:opacity-40 transition"
+                                        title="Demote to standard User"
+                                      >
+                                        <UserMinus size={13} /> User
+                                      </button>
+                                    )}
 
-                            <button
-                              onClick={() => handleDelete(user)}
-                              disabled={actionUserId === user.id || user.id === admin.id}
-                              className="inline-flex items-center gap-1.5 rounded-lg border border-rose-200 px-3 py-1.5 text-xs font-semibold text-rose-600 hover:bg-rose-50 disabled:opacity-40 disabled:cursor-not-allowed transition"
-                            >
-                              <Trash2 size={14} /> Delete
-                            </button>
+                                    {user.role !== "ADMIN" && (
+                                      <button
+                                        onClick={() => handleSetRole(user, "ADMIN")}
+                                        disabled={actionUserId === user.id}
+                                        className="inline-flex items-center gap-1 rounded-lg border border-amber-200 bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-800 hover:bg-amber-100 disabled:opacity-40 transition"
+                                        title="Set role as Admin"
+                                      >
+                                        <Crown size={13} /> Admin
+                                      </button>
+                                    )}
+
+                                    {user.role !== "SUPERADMIN" && (
+                                      <button
+                                        onClick={() => handleSetRole(user, "SUPERADMIN")}
+                                        disabled={actionUserId === user.id}
+                                        className="inline-flex items-center gap-1 rounded-lg border border-purple-200 bg-purple-50 px-2.5 py-1 text-xs font-semibold text-purple-800 hover:bg-purple-100 disabled:opacity-40 transition"
+                                        title="Promote to Superadmin"
+                                      >
+                                        <ShieldAlert size={13} /> Superadmin
+                                      </button>
+                                    )}
+
+                                    <button
+                                      onClick={() => handleDelete(user)}
+                                      disabled={actionUserId === user.id}
+                                      className="inline-flex items-center gap-1 rounded-lg border border-rose-200 px-2.5 py-1 text-xs font-semibold text-rose-600 hover:bg-rose-50 disabled:opacity-40 transition ml-1"
+                                      title="Delete user and portfolio"
+                                    >
+                                      <Trash2 size={13} /> Delete
+                                    </button>
+                                  </>
+                                ) : (
+                                  <span className="text-xs text-slate-400 italic font-medium px-2 py-1">
+                                    (Current Superadmin)
+                                  </span>
+                                )}
+                              </div>
+                            ) : (
+                              <div className="flex items-center gap-1.5">
+                                {user.role === "SUPERADMIN" || user.role === "ADMIN" ? (
+                                  <span className="text-xs text-slate-400 italic font-medium px-2 py-1">
+                                    {user.id === admin.id ? "(You)" : "(Protected)"}
+                                  </span>
+                                ) : (
+                                  <>
+                                    <button
+                                      onClick={() => handleSetRole(user, "ADMIN")}
+                                      disabled={actionUserId === user.id}
+                                      className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-100 disabled:opacity-40 transition"
+                                    >
+                                      <Crown size={14} /> Make admin
+                                    </button>
+
+                                    <button
+                                      onClick={() => handleDelete(user)}
+                                      disabled={actionUserId === user.id}
+                                      className="inline-flex items-center gap-1.5 rounded-lg border border-rose-200 px-3 py-1.5 text-xs font-semibold text-rose-600 hover:bg-rose-50 disabled:opacity-40 transition"
+                                    >
+                                      <Trash2 size={14} /> Delete
+                                    </button>
+                                  </>
+                                )}
+                              </div>
+                            )}
                           </div>
                         </td>
                       </tr>

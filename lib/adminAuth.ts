@@ -2,6 +2,8 @@ import { cookies } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import { verifySession } from "@/lib/auth";
 
+export type Role = "USER" | "ADMIN" | "SUPERADMIN";
+
 export type AdminUser = {
   id: string;
   name: string;
@@ -35,8 +37,37 @@ export async function requireAdmin(): Promise<AdminCheck> {
     return { user: null, error: { message: "User not found.", status: 404 } };
   }
 
-  if (user.role !== "ADMIN") {
+  if (user.role !== "ADMIN" && user.role !== "SUPERADMIN") {
     return { user: null, error: { message: "Admin access required.", status: 403 } };
+  }
+
+  return { user, error: null };
+}
+
+export async function requireSuperAdmin(): Promise<AdminCheck> {
+  const cookieStore = await cookies();
+  const session = cookieStore.get("session")?.value;
+
+  if (!session) {
+    return { user: null, error: { message: "You must be logged in.", status: 401 } };
+  }
+
+  const payload = await verifySession(session);
+  if (!payload) {
+    return { user: null, error: { message: "Invalid or expired session.", status: 401 } };
+  }
+
+  const user = await prisma.user.findUnique({
+    where: { id: payload.userId },
+    select: { id: true, name: true, email: true, role: true },
+  });
+
+  if (!user) {
+    return { user: null, error: { message: "User not found.", status: 404 } };
+  }
+
+  if (user.role !== "SUPERADMIN") {
+    return { user: null, error: { message: "Superadmin access required.", status: 403 } };
   }
 
   return { user, error: null };

@@ -116,6 +116,7 @@ export async function GET() {
       summary: {
         totalUsers: users.length,
         totalAdmins: users.filter((item) => item.role === "ADMIN").length,
+        totalSuperAdmins: users.filter((item) => item.role === "SUPERADMIN").length,
         totalInvestments: investments.length,
         totalInvested,
         totalCurrentValue,

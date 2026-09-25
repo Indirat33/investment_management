@@ -15,6 +15,8 @@ import {
   ArrowRight,
   Sparkles,
   ShieldCheck,
+  ArrowLeftRight,
+  HelpCircle,
 } from "lucide-react";
 import {
   ResponsiveContainer,
@@ -214,11 +216,35 @@ export default function DashboardPage() {
               </Link>
 
               <Link
+                href="/portfolio"
+                className="flex items-center gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition"
+              >
+                <PieChartIcon size={20} />
+                Portfolio
+              </Link>
+
+              <Link
+                href="/transactions"
+                className="flex items-center gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition"
+              >
+                <ArrowLeftRight size={20} />
+                Transactions
+              </Link>
+
+              <Link
                 href="/investments/add"
                 className="flex items-center gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition"
               >
                 <PlusCircle size={20} />
                 Add Investment
+              </Link>
+
+              <Link
+                href="/support"
+                className="flex items-center gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition"
+              >
+                <HelpCircle size={20} />
+                Support & Help
               </Link>
 
               <Link
@@ -229,7 +255,7 @@ export default function DashboardPage() {
                 Profile
               </Link>
 
-              {user.role === "ADMIN" && (
+              {(user.role === "ADMIN" || user.role === "SUPERADMIN") && (
                 <Link
                   href="/admin"
                   className="flex items-center gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition"

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import SocialIcons from "./SocialIcons";
 
 export default function Navbar() {
   return (
@@ -42,18 +43,26 @@ export default function Navbar() {
           </a>
         </div>
 
-        {/* Right Side Buttons */}
+        {/* Right Side Buttons & Socials */}
         <div className="flex items-center gap-4">
+          <div className="hidden lg:flex items-center pr-2 border-r border-slate-200">
+            <SocialIcons
+              variant="minimal"
+              className="flex items-center gap-2.5"
+              itemClassName="text-slate-400 hover:text-blue-600"
+            />
+          </div>
+
           <Link
             href="/login"
-            className="rounded-lg border border-blue-600 px-5 py-2 font-medium text-blue-600 transition hover:bg-blue-50"
+            className="rounded-lg border border-blue-600 px-4 py-2 font-medium text-blue-600 transition hover:bg-blue-50 text-sm md:text-base"
           >
             Login
           </Link>
 
           <Link
             href="/register"
-            className="rounded-lg bg-blue-600 px-5 py-2 font-medium text-white transition hover:bg-blue-700"
+            className="rounded-lg bg-blue-600 px-4 py-2 font-medium text-white transition hover:bg-blue-700 text-sm md:text-base"
           >
             Register
           </Link>

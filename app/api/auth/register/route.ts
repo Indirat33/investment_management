@@ -32,6 +32,39 @@ async function ensureTablesExist() {
           CONSTRAINT "Investment_pkey" PRIMARY KEY ("id")
       );
     `);
+    await prisma.$executeRawUnsafe(`
+      CREATE TABLE IF NOT EXISTS "Transaction" (
+          "id" TEXT NOT NULL,
+          "type" TEXT NOT NULL,
+          "assetName" TEXT NOT NULL,
+          "category" TEXT NOT NULL DEFAULT 'Other',
+          "amount" DOUBLE PRECISION NOT NULL,
+          "status" TEXT NOT NULL DEFAULT 'COMPLETED',
+          "date" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          "notes" TEXT,
+          "userId" TEXT NOT NULL,
+          "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          CONSTRAINT "Transaction_pkey" PRIMARY KEY ("id")
+      );
+    `);
+    await prisma.$executeRawUnsafe(`
+      CREATE TABLE IF NOT EXISTS "SupportTicket" (
+          "id" TEXT NOT NULL,
+          "ticketNumber" TEXT NOT NULL,
+          "subject" TEXT NOT NULL,
+          "category" TEXT NOT NULL,
+          "priority" TEXT NOT NULL DEFAULT 'MEDIUM',
+          "status" TEXT NOT NULL DEFAULT 'OPEN',
+          "message" TEXT NOT NULL,
+          "userId" TEXT NOT NULL,
+          "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          CONSTRAINT "SupportTicket_pkey" PRIMARY KEY ("id")
+      );
+    `);
+    await prisma.$executeRawUnsafe(`
+      CREATE UNIQUE INDEX IF NOT EXISTS "SupportTicket_ticketNumber_key" ON "SupportTicket"("ticketNumber");
+    `);
   } catch (err) {
     console.error("Auto table creation error:", err);
   }

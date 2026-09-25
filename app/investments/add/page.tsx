@@ -14,6 +14,8 @@ import {
   Tag,
   PieChart,
   ShieldCheck,
+  ArrowLeftRight,
+  HelpCircle,
 } from "lucide-react";
 
 const CATEGORIES = [
@@ -163,11 +165,35 @@ export default function AddInvestmentPage() {
               </Link>
 
               <Link
+                href="/portfolio"
+                className="flex items-center gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition"
+              >
+                <PieChart size={20} />
+                Portfolio
+              </Link>
+
+              <Link
+                href="/transactions"
+                className="flex items-center gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition"
+              >
+                <ArrowLeftRight size={20} />
+                Transactions
+              </Link>
+
+              <Link
                 href="/investments/add"
                 className="flex items-center gap-3 rounded-lg bg-blue-600 px-4 py-3 text-white font-medium"
               >
                 <PlusCircle size={20} />
                 Add Investment
+              </Link>
+
+              <Link
+                href="/support"
+                className="flex items-center gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition"
+              >
+                <HelpCircle size={20} />
+                Support & Help
               </Link>
 
               <Link
@@ -178,7 +204,7 @@ export default function AddInvestmentPage() {
                 Profile
               </Link>
 
-              {user?.role === "ADMIN" && (
+              {(user?.role === "ADMIN" || user?.role === "SUPERADMIN") && (
                 <Link
                   href="/admin"
                   className="flex items-center gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 transition"

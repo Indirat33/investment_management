@@ -14,7 +14,9 @@ model User {
   role        String   @default("USER")
   createdAt   DateTime @default(now())
 
-  investments Investment[]
+  investments   Investment[]
+  transactions  Transaction[]
+  tickets       SupportTicket[]
 }
 
 model Investment {
@@ -30,4 +32,36 @@ model Investment {
   user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
+}
+
+model Transaction {
+  id          String   @id @default(cuid())
+  type        String   // BUY, SELL, DEPOSIT, WITHDRAWAL, DIVIDEND
+  assetName   String
+  category    String   @default("Other")
+  amount      Float
+  status      String   @default("COMPLETED") // COMPLETED, PENDING, CANCELLED
+  date        DateTime @default(now())
+  notes       String?
+
+  userId String
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+}
+
+model SupportTicket {
+  id           String   @id @default(cuid())
+  ticketNumber String   @unique
+  subject      String
+  category     String   // Account, Portfolio, Transactions, Technical, General
+  priority     String   @default("MEDIUM") // LOW, MEDIUM, HIGH, URGENT
+  status       String   @default("OPEN")   // OPEN, IN_PROGRESS, RESOLVED, CLOSED
+  message      String
+
+  userId String
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 }
